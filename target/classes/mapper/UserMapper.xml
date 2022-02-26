@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mapper namespace="com.qcby.dao.AccountDao">
-    <select id="findAll" resultType="account">
-        select * from account
-    </select>
-</mapper>
