@@ -1,5 +1,8 @@
 package com.entity;
 
+/**
+ * @author xuwei
+ */
 public class User {
     private Integer id;
     private String realName;

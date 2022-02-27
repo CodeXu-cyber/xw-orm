@@ -12,9 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * @author xuwei
+ */
 public class XmlUtil {
-    /*
-    解析配置文件并返回配置文件属性集合
+    /**
+     * 解析Configuration
+     *
+     * @param file
+     * @return
      */
     public Map<String, Object> analysisConfig(File file) {
         Map<String, Object> config = new HashMap<>();
@@ -57,8 +64,11 @@ public class XmlUtil {
         return config;
     }
 
-    /*
-    去配置文件中定义的xml中寻找namespace与className相同的xml,返回文件具体路径------在执行方法时扫描xml时用的,已废弃
+    /**
+     * 获取mapper
+     * @param className
+     * @param mappers
+     * @return
      */
     public String getMapperFile(String className, List<String> mappers) {
         for (String mapper : mappers) {
@@ -77,8 +87,10 @@ public class XmlUtil {
         return null;
     }
 
-    /*
-    解析mapperXml的方法集合,映射为实体类集合
+    /**
+     * 获取mapper
+     * @param mappers
+     * @return
      */
     public Map<String, MappedStatement> getMappedStatements(List<String> mappers) {
         Map<String, MappedStatement> mappedStatementMap = new HashMap<>();

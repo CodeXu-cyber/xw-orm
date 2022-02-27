@@ -1,15 +1,28 @@
 package com.system;
 
+/**
+ * @author xuwei
+ */
 public class MappedStatement {
-    //sql节点的id,对应接口方法名
+    /**
+     * sql节点的id,对应接口方法名
+     */
     private final String id;
-    //sql的返回参数类型
+    /**
+     * sql的返回类型参数
+     */
     private final String resultType;
-    //sql的入参类型
+    /**
+     * sql的入参类型
+     */
     private final String parameterType;
-    //sql是否为查询
+    /**
+     * sql是否为查询
+     */
     private final boolean query;
-    //sql语句
+    /**
+     * sql语句
+     */
     private final String sql;
 
     public MappedStatement(String id, String resultType, String parameterType, boolean query, String sql) {

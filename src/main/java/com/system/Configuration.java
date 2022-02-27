@@ -6,6 +6,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author xuwei
+ */
 public class Configuration {
     private String driver = null;
     private String url = null;

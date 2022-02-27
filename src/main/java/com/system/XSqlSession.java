@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 
+/**
+ * @author xuwei
+ */
 public class XSqlSession implements InvocationHandler {
     private String className;
     private final Configuration configuration;

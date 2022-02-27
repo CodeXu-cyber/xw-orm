@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author xuwei
+ */
 public class BaseExecutor implements Executor {
 
     @Override
@@ -72,8 +75,8 @@ public class BaseExecutor implements Executor {
                     String name = "";
                     for (int i = 0; i < params.size(); i++) {
                         name = params.get(i).substring(0, 1).toUpperCase() + params.get(i).substring(1);
-                        String MethodName = "get" + name;
-                        Method methodObj = clazz.getMethod(MethodName);
+                        String methodName = "get" + name;
+                        Method methodObj = clazz.getMethod(methodName);
                         //调用getter方法完成赋值
                         String value = methodObj.invoke(obj).toString();
                         preparedStatement.setString(i + 1, value);
@@ -101,8 +104,8 @@ public class BaseExecutor implements Executor {
                 //通过属性名找到对应的setter方法
                 String name = fields[i].getName();
                 name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                String MethodName = "set"+name;
-                Method methodObj = clazz.getMethod(MethodName,fields[i].getType());
+                String methodName = "set"+name;
+                Method methodObj = clazz.getMethod(methodName,fields[i].getType());
                 //调用setter方法完成赋值
                 methodObj.invoke(obj, value);
             }
