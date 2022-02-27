@@ -2,16 +2,16 @@ package com.entity;
 
 public class User {
     private Integer id;
-    private String name;
+    private String realName;
     private String sex;
     private String address;
 
-    public String getName() {
-        return name;
+    public String getRealName() {
+        return realName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRealName(String name) {
+        this.realName = name;
     }
 
     public String getSex() {
@@ -42,7 +42,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", realName='" + realName + '\'' +
                 ", sex='" + sex + '\'' +
                 ", address='" + address + '\'' +
                 '}';

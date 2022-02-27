@@ -35,9 +35,9 @@ public class XSqlSession implements InvocationHandler {
         Object obj = null;
         if (mappedStatement.isQuery()){
             if (method.getReturnType().isInstance(new ArrayList<>())){
-                obj = baseExecutor.queryList(connection,mappedStatement,args);
+                obj = baseExecutor.queryList(connection,mappedStatement,args,configuration.isUnderlineAndHump());
             }else {
-                obj = baseExecutor.queryOne(connection,mappedStatement,args);
+                obj = baseExecutor.queryOne(connection,mappedStatement,args,configuration.isUnderlineAndHump());
             }
         }else {
             obj =  baseExecutor.update(connection,mappedStatement,args);

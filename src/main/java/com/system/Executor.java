@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface Executor {
-    List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args) throws Exception;
-    Object queryOne(Connection connection,MappedStatement mappedStatement, Object[] args) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
+    List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args,boolean underlineAndHump) throws Exception;
+    Object queryOne(Connection connection,MappedStatement mappedStatement, Object[] args,boolean underlineAndHump) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
     int update(Connection connection,MappedStatement mappedStatement, Object[] args) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
 }

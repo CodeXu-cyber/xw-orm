@@ -7,7 +7,7 @@
         <property name="password" value="Gyj1113.."/>
     </dataSource>
     <setting>
-        <property name="underlineAndHump" value="false"/>
+        <property name="underlineAndHump" value="true"/>
     </setting>
     <mappers>
         <mapper resource="src/main/resources/mapper/UserMapper.xml"/>

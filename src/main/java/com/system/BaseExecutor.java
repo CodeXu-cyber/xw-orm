@@ -1,5 +1,7 @@
 package com.system;
 
+import com.utils.UnderlineAndHumpUtil;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,21 +14,21 @@ import java.util.regex.Pattern;
 public class BaseExecutor implements Executor {
 
     @Override
-    public List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args) throws ClassNotFoundException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args,boolean underlineAndHump) throws ClassNotFoundException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         if (mappedStatement.getResultType()==null){
             System.out.println("未定义resultType!");
             return null;
         }
-        return resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery());
+        return resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery(),underlineAndHump);
     }
 
     @Override
-    public Object queryOne(Connection connection, MappedStatement mappedStatement, Object[] args) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public Object queryOne(Connection connection, MappedStatement mappedStatement, Object[] args,boolean underlineAndHump) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         if (mappedStatement.getResultType()==null){
             System.out.println("未定义resultType!");
             return null;
         }
-        return resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery()).size()==0?null:resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery()).get(0);
+        return resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery(),underlineAndHump).size()==0?null:resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery(),underlineAndHump).get(0);
     }
 
     @Override
@@ -56,6 +58,7 @@ public class BaseExecutor implements Executor {
             preparedStatement = connection.prepareStatement(sql);
             switch (mappedStatement.getParameterType()) {
                 case "int":
+                case "java.lang.Integer":
                     int num = Integer.parseInt(args[0].toString());
                     preparedStatement.setInt(1, num);
                     break;
@@ -72,7 +75,7 @@ public class BaseExecutor implements Executor {
                         String MethodName = "get" + name;
                         Method methodObj = clazz.getMethod(MethodName);
                         //调用getter方法完成赋值
-                        String value = (String) methodObj.invoke(obj);
+                        String value = methodObj.invoke(obj).toString();
                         preparedStatement.setString(i + 1, value);
                     }
                     break;
@@ -82,7 +85,7 @@ public class BaseExecutor implements Executor {
         }
         return preparedStatement;
     }
-    public List<Object> resultToBean(String resultType,ResultSet resultSet) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, SQLException, InstantiationException, ClassNotFoundException {
+    public List<Object> resultToBean(String resultType,ResultSet resultSet,boolean underlineAndHump) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, SQLException, InstantiationException, ClassNotFoundException {
         Object obj = null;
         List<Object> objectList = new ArrayList<>();
         while (resultSet.next()){
@@ -94,7 +97,7 @@ public class BaseExecutor implements Executor {
             //遍历实体类属性集合，依次将结果集中的值赋给属性
             Field[] fields = clazz.getDeclaredFields();
             for(int i = 0; i < fields.length; i++){
-                Object value = setFieldValueByResultSet(fields[i],resultSetMetaData,resultSet);
+                Object value = setFieldValueByResultSet(fields[i],resultSetMetaData,resultSet,underlineAndHump);
                 //通过属性名找到对应的setter方法
                 String name = fields[i].getName();
                 name = name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -109,20 +112,20 @@ public class BaseExecutor implements Executor {
     }
 
 
-    public Object setFieldValueByResultSet(Field field,ResultSetMetaData rsmd,ResultSet rs){
+    public Object setFieldValueByResultSet(Field field,ResultSetMetaData rsmd,ResultSet rs,boolean underlineAndHump){
         Object result = null;
         try {
             int count = rsmd.getColumnCount();
             for(int i=1;i<=count;i++){
-                if(field.getName().equals(rsmd.getColumnName(i))){
+                if(field.getName().equals(underlineAndHump? UnderlineAndHumpUtil.underlineToHump(rsmd.getColumnName(i)):rsmd.getColumnName(i))){
                     String type = field.getType().getName();
                     switch (type) {
                         case "int":
                         case "java.lang.Integer":
-                            result = rs.getInt(field.getName());
+                            result = rs.getInt(underlineAndHump?UnderlineAndHumpUtil.humpToUnderline(field.getName()):field.getName());
                             break;
                         case "java.lang.String":
-                            result = rs.getString(field.getName());
+                            result = rs.getString(underlineAndHump?UnderlineAndHumpUtil.humpToUnderline(field.getName()):field.getName());
                             break;
                         default:
                             break;
