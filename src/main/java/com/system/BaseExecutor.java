@@ -43,6 +43,7 @@ public class BaseExecutor implements Executor {
         String regex = "\\{([^}]*)}";
         Pattern pattern = Pattern.compile(regex);
         String sql = mappedStatement.getSql();
+        String sqlKey = mappedStatement.getSql();
         Matcher matcher = pattern.matcher(sql);
         List<String> params = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -64,10 +65,12 @@ public class BaseExecutor implements Executor {
                 case "java.lang.Integer":
                     int num = Integer.parseInt(args[0].toString());
                     preparedStatement.setInt(1, num);
+                    sqlKey = sql + num;
                     break;
                 case "java.lang.String":
                     String str = args[0].toString();
                     preparedStatement.setString(1, str);
+                    sqlKey = sql + str;
                     break;
                 default:
                     Class clazz = Class.forName(mappedStatement.getParameterType());
@@ -80,6 +83,7 @@ public class BaseExecutor implements Executor {
                         //调用getter方法完成赋值
                         String value = methodObj.invoke(obj).toString();
                         preparedStatement.setString(i + 1, value);
+                        sqlKey = sqlKey.replace("{"+params.get(i)+"}",value);
                     }
                     break;
             }
