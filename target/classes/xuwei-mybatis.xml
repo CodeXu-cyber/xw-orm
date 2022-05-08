@@ -8,8 +8,6 @@
     </dataSource>
     <setting>
         <property name="underlineAndHump" value="true"/>
-        <property name="openTheCatch" value="true"/>
-        <property name="catchSize" value="20"/>
     </setting>
     <mappers>
         <mapper resource="src/main/resources/mapper/UserMapper.xml"/>

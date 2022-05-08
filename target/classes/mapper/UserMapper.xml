@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="com.mapper.UserMapper">
+    <select id="findAll" resultType="com.entity.User">
+        select * from user;
+    </select>
+    <select id="findById" parameterType="int" resultType="com.entity.User">
+        select * from user where id = #{id};
+    </select>
+    <update id="updateUser" parameterType="com.entity.User">
+        update user set real_name = #{realName} , sex = #{sex} , address = #{address} where id = #{id};
+    </update>
+    <insert id="addUser" parameterType="com.entity.User">
+        insert into user (real_name,sex,address) values (#{realName},#{sex},#{address});
+    </insert>
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id = #{id};
+    </delete>
+    <select id="find">
+
+    </select>
+</mapper>

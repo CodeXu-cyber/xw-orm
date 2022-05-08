@@ -15,7 +15,7 @@ public class XSqlSession implements InvocationHandler {
     private final Configuration configuration;
 
     public XSqlSession(String pathName) {
-        this.configuration = new Configuration(pathName);
+        this.configuration = Configuration.getConfiguration(pathName);
     }
 
     public Object getMapper(Class cls){
@@ -34,16 +34,17 @@ public class XSqlSession implements InvocationHandler {
         Class.forName(configuration.getDriver());
         Connection connection = DriverManager.getConnection(configuration.getUrl(), configuration.getUsername(), configuration.getPassword());
         //建立执行器
-        BaseExecutor baseExecutor = new BaseExecutor();
+        Executor executor = new BaseExecutor();
+        System.out.println(executor);
         Object obj = null;
         if (mappedStatement.isQuery()){
             if (method.getReturnType().isInstance(new ArrayList<>())){
-                obj = baseExecutor.queryList(connection,mappedStatement,args,configuration.isUnderlineAndHump());
+                obj = executor.queryList(connection,mappedStatement,args,configuration.isUnderlineAndHump());
             }else {
-                obj = baseExecutor.queryOne(connection,mappedStatement,args,configuration.isUnderlineAndHump());
+                obj = executor.queryOne(connection,mappedStatement,args,configuration.isUnderlineAndHump());
             }
         }else {
-            obj =  baseExecutor.update(connection,mappedStatement,args);
+            obj =  executor.update(connection,mappedStatement,args);
         }
         connection.close();
         return obj;

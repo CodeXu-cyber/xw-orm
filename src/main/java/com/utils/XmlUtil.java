@@ -54,6 +54,12 @@ public class XmlUtil {
                     if ("underlineAndHump".equals(c.attributeValue("name"))) {
                         config.put("underlineAndHump", c.attributeValue("value"));
                     }
+                    if ("openTheCatch".equals(c.attributeValue("name"))) {
+                        config.put("openTheCatch", c.attributeValue("value"));
+                    }
+                    if ("catchSize".equals(c.attributeValue("name"))) {
+                        config.put("catchSize", c.attributeValue("value"));
+                    }
                     if (!"".equals(c.attributeValue("resource")) && c.attributeValue("resource") != null) {
                         mappers.add(c.attributeValue("resource"));
                     }
