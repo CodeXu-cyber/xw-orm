@@ -1,4 +1,4 @@
-package com.utils;
+package com.system.utils;
 
 import com.system.MappedStatement;
 import org.dom4j.Document;

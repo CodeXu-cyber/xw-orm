@@ -1,6 +1,7 @@
-package com.system;
+package com.system.executor;
 
-import com.utils.UnderlineAndHumpUtil;
+import com.system.MappedStatement;
+import com.system.utils.UnderlineAndHumpUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
 public class BaseExecutor implements Executor {
 
     @Override
-    public List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args,boolean underlineAndHump) throws ClassNotFoundException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args, boolean underlineAndHump) throws ClassNotFoundException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         if (mappedStatement.getResultType()==null){
             System.out.println("未定义resultType!");
             return null;
