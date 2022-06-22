@@ -1,5 +1,6 @@
 import com.entity.User;
 import com.mapper.UserMapper;
+import com.system.Configuration;
 import com.system.XSqlSession;
 import org.junit.Test;
 

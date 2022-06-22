@@ -12,6 +12,9 @@ public class UnderlineAndHumpUtil {
 
     /**
      * 下划线转驼峰
+     *
+     * @param str str
+     * @return str
      */
     public static String underlineToHump(String str) {
         str = str.toLowerCase();
@@ -26,6 +29,9 @@ public class UnderlineAndHumpUtil {
 
     /**
      * 驼峰转下划线
+     *
+     * @param str str
+     * @return str
      */
     public static String humpToUnderline(String str) {
         Matcher matcher = HUMP_PATTERN.matcher(str);

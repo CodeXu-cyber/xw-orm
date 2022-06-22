@@ -20,8 +20,8 @@ public class XmlUtil {
     /**
      * 解析Configuration
      *
-     * @param file
-     * @return
+     * @param file 配置文件
+     * @return 配置Map
      */
     public Map<String, Object> analysisConfig(File file) {
         Map<String, Object> config = new HashMap<>();
@@ -72,9 +72,9 @@ public class XmlUtil {
 
     /**
      * 获取mapper
-     * @param className
-     * @param mappers
-     * @return
+     * @param className 类名称
+     * @param mappers mappers
+     * @return str
      */
     public String getMapperFile(String className, List<String> mappers) {
         for (String mapper : mappers) {
@@ -95,8 +95,8 @@ public class XmlUtil {
 
     /**
      * 获取mapper
-     * @param mappers
-     * @return
+     * @param mappers mappers
+     * @return map
      */
     public Map<String, MappedStatement> getMappedStatements(List<String> mappers) {
         Map<String, MappedStatement> mappedStatementMap = new HashMap<>();
