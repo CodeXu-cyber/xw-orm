@@ -1,6 +1,8 @@
 package com.system.executor;
 
+import com.system.Configuration;
 import com.system.MappedStatement;
+import com.system.SimpleCatch;
 import com.system.utils.UnderlineAndHumpUtil;
 
 import java.lang.reflect.Field;
@@ -18,25 +20,53 @@ import java.util.regex.Pattern;
 public class BaseExecutor implements Executor {
 
     @Override
-    public List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args, boolean underlineAndHump) throws ClassNotFoundException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-        if (mappedStatement.getResultType()==null){
+    public List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args, Configuration configuration) throws ClassNotFoundException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+        if (mappedStatement.getResultType() == null) {
             System.out.println("未定义resultType!");
             return null;
         }
-        return resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery(),underlineAndHump);
+        PreparedStatement preparedStatement = initPreparedStatement(connection, mappedStatement, args);
+        if (configuration.isOpenTheCatch()){
+            SimpleCatch simpleCatch = configuration.getSimpleCatch();
+            if (simpleCatch.containsKey(preparedStatement.toString())){
+                return resultToBean(mappedStatement.getResultType(),simpleCatch.get(preparedStatement.toString()),configuration.isUnderlineAndHump());
+            }else {
+                ResultSet resultSet = preparedStatement.executeQuery();
+                simpleCatch.put(preparedStatement.toString(),resultSet);
+                return resultToBean(mappedStatement.getResultType(), resultSet, configuration.isUnderlineAndHump());
+            }
+        }
+        return resultToBean(mappedStatement.getResultType(), preparedStatement.executeQuery(), configuration.isUnderlineAndHump());
     }
 
     @Override
-    public Object queryOne(Connection connection, MappedStatement mappedStatement, Object[] args,boolean underlineAndHump) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-        if (mappedStatement.getResultType()==null){
+    public Object queryOne(Connection connection, MappedStatement mappedStatement, Object[] args, Configuration configuration) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+        if (mappedStatement.getResultType() == null) {
             System.out.println("未定义resultType!");
             return null;
         }
-        return resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery(),underlineAndHump).size()==0?null:resultToBean(mappedStatement.getResultType(), initPreparedStatement(connection, mappedStatement, args).executeQuery(),underlineAndHump).get(0);
+        PreparedStatement preparedStatement = initPreparedStatement(connection, mappedStatement, args);
+        if (configuration.isOpenTheCatch()){
+            SimpleCatch simpleCatch = configuration.getSimpleCatch();
+            if (simpleCatch.containsKey(preparedStatement.toString())){
+                List<Object> objectList = resultToBean(mappedStatement.getResultType(), simpleCatch.get(preparedStatement.toString()), configuration.isUnderlineAndHump());
+                return objectList.size() == 0 ? null : objectList.get(0);
+            }else {
+                ResultSet resultSet = preparedStatement.executeQuery();
+                simpleCatch.put(preparedStatement.toString(),resultSet);
+                List<Object> objectList = resultToBean(mappedStatement.getResultType(), preparedStatement.executeQuery(), configuration.isUnderlineAndHump());
+                return objectList.size() == 0 ? null : objectList.get(0);
+            }
+        }
+        List<Object> objectList = resultToBean(mappedStatement.getResultType(), preparedStatement.executeQuery(), configuration.isUnderlineAndHump());
+        return objectList.size() == 0 ? null : objectList.get(0);
     }
 
     @Override
-    public int update(Connection connection, MappedStatement mappedStatement, Object[] args) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public int update(Connection connection, MappedStatement mappedStatement, Object[] args, Configuration configuration) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        if (configuration.isOpenTheCatch()){
+            configuration.getSimpleCatch().clear();
+        }
         return initPreparedStatement(connection, mappedStatement, args).executeUpdate();
     }
 
@@ -84,15 +114,16 @@ public class BaseExecutor implements Executor {
                     }
                     break;
             }
-        }else {
+        } else {
             preparedStatement = connection.prepareStatement(sql);
         }
         return preparedStatement;
     }
-    public List<Object> resultToBean(String resultType,ResultSet resultSet,boolean underlineAndHump) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, SQLException, InstantiationException, ClassNotFoundException {
+
+    public List<Object> resultToBean(String resultType, ResultSet resultSet, boolean underlineAndHump) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, SQLException, InstantiationException, ClassNotFoundException {
         Object obj = null;
         List<Object> objectList = new ArrayList<>();
-        while (resultSet.next()){
+        while (resultSet.next()) {
             //反射创建对象
             Class clazz = Class.forName(resultType);
             obj = clazz.newInstance();
@@ -100,13 +131,13 @@ public class BaseExecutor implements Executor {
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             //遍历实体类属性集合，依次将结果集中的值赋给属性
             Field[] fields = clazz.getDeclaredFields();
-            for(int i = 0; i < fields.length; i++){
-                Object value = setFieldValueByResultSet(fields[i],resultSetMetaData,resultSet,underlineAndHump);
+            for (int i = 0; i < fields.length; i++) {
+                Object value = setFieldValueByResultSet(fields[i], resultSetMetaData, resultSet, underlineAndHump);
                 //通过属性名找到对应的setter方法
                 String name = fields[i].getName();
                 name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                String methodName = "set"+name;
-                Method methodObj = clazz.getMethod(methodName,fields[i].getType());
+                String methodName = "set" + name;
+                Method methodObj = clazz.getMethod(methodName, fields[i].getType());
                 //调用setter方法完成赋值
                 methodObj.invoke(obj, value);
             }
@@ -116,20 +147,20 @@ public class BaseExecutor implements Executor {
     }
 
 
-    public Object setFieldValueByResultSet(Field field,ResultSetMetaData rsmd,ResultSet rs,boolean underlineAndHump){
+    public Object setFieldValueByResultSet(Field field, ResultSetMetaData rsmd, ResultSet rs, boolean underlineAndHump) {
         Object result = null;
         try {
             int count = rsmd.getColumnCount();
-            for(int i=1;i<=count;i++){
-                if(field.getName().equals(underlineAndHump? UnderlineAndHumpUtil.underlineToHump(rsmd.getColumnName(i)):rsmd.getColumnName(i))){
+            for (int i = 1; i <= count; i++) {
+                if (field.getName().equals(underlineAndHump ? UnderlineAndHumpUtil.underlineToHump(rsmd.getColumnName(i)) : rsmd.getColumnName(i))) {
                     String type = field.getType().getName();
                     switch (type) {
                         case "int":
                         case "java.lang.Integer":
-                            result = rs.getInt(underlineAndHump?UnderlineAndHumpUtil.humpToUnderline(field.getName()):field.getName());
+                            result = rs.getInt(underlineAndHump ? UnderlineAndHumpUtil.humpToUnderline(field.getName()) : field.getName());
                             break;
                         case "java.lang.String":
-                            result = rs.getString(underlineAndHump?UnderlineAndHumpUtil.humpToUnderline(field.getName()):field.getName());
+                            result = rs.getString(underlineAndHump ? UnderlineAndHumpUtil.humpToUnderline(field.getName()) : field.getName());
                             break;
                         default:
                             break;

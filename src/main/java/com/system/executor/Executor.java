@@ -1,5 +1,6 @@
 package com.system.executor;
 
+import com.system.Configuration;
 import com.system.MappedStatement;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +22,7 @@ public interface Executor {
      * @return 查询结果结合
      * @throws Exception 异常信息
      */
-    List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args, boolean underlineAndHump) throws Exception;
+    List<Object> queryList(Connection connection, MappedStatement mappedStatement, Object[] args, Configuration configuration) throws Exception;
 
     /**
      * 查询单个接口
@@ -38,7 +39,7 @@ public interface Executor {
      * @throws IllegalAccessException    IllegalAccessException
      * @throws InstantiationException    InstantiationException
      */
-    Object queryOne(Connection connection, MappedStatement mappedStatement, Object[] args, boolean underlineAndHump) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
+    Object queryOne(Connection connection, MappedStatement mappedStatement, Object[] args, Configuration configuration) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
 
     /**
      * 修改接口
@@ -53,5 +54,5 @@ public interface Executor {
      * @throws NoSuchMethodException     NoSuchMethodException
      * @throws IllegalAccessException    IllegalAccessException
      */
-    int update(Connection connection, MappedStatement mappedStatement, Object[] args) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    int update(Connection connection, MappedStatement mappedStatement, Object[] args, Configuration configuration) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
 }
