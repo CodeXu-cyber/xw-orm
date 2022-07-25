@@ -21,18 +21,18 @@ public class XSqlSession implements InvocationHandler {
         this.configuration = Configuration.getConfiguration(pathName);
     }
 
-    public Object getMapper(Class cls){
+    public Object getMapper(Class cls) {
         className = cls.getName();
         return Proxy.newProxyInstance(
                 cls.getClassLoader(),
-                new Class[] { cls },
+                new Class[]{cls},
                 this);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         //到configuration中去获取方法对应的MappedStatement
-        MappedStatement mappedStatement = configuration.getMappedStatementMap().get(className+"."+method.getName());
+        MappedStatement mappedStatement = configuration.getMappedStatementMap().get(className + "." + method.getName());
         //建立数据库连接
         Class.forName(configuration.getDriver());
         Connection connection = DriverManager.getConnection(configuration.getUrl(), configuration.getUsername(), configuration.getPassword());
@@ -40,14 +40,14 @@ public class XSqlSession implements InvocationHandler {
         Executor executor = new BaseExecutor();
         System.out.println(executor);
         Object obj = null;
-        if (mappedStatement.isQuery()){
-            if (method.getReturnType().isInstance(new ArrayList<>())){
-                obj = executor.queryList(connection,mappedStatement,args,configuration.isUnderlineAndHump());
-            }else {
-                obj = executor.queryOne(connection,mappedStatement,args,configuration.isUnderlineAndHump());
+        if (mappedStatement.isQuery()) {
+            if (method.getReturnType().isInstance(new ArrayList<>())) {
+                obj = executor.queryList(connection, mappedStatement, args, configuration.isUnderlineAndHump());
+            } else {
+                obj = executor.queryOne(connection, mappedStatement, args, configuration.isUnderlineAndHump());
             }
-        }else {
-            obj =  executor.update(connection,mappedStatement,args);
+        } else {
+            obj = executor.update(connection, mappedStatement, args);
         }
         connection.close();
         return obj;

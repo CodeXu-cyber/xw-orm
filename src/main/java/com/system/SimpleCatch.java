@@ -94,14 +94,14 @@ public class SimpleCatch {
             int index = 0;
             int minUsedNum = keyNums[0].num;
             for (int i = 0; i < size; ++i) {
-                if (keyNums[i].num <minUsedNum){
+                if (keyNums[i].num < minUsedNum) {
                     index = i;
                     minUsedNum = keyNums[i].num;
                 }
             }
             simpleCatch.remove(keyNums[index].key);
-            keyNums[index] = new KeyNum(key,0);
-            simpleCatch.put(key,resultSet);
+            keyNums[index] = new KeyNum(key, 0);
+            simpleCatch.put(key, resultSet);
         }
     }
 
@@ -112,8 +112,8 @@ public class SimpleCatch {
      * @return
      */
     public ResultSet get(String key) {
-        for (int i=0;i<size;++i){
-            if (key.equals(keyNums[i].key)){
+        for (int i = 0; i < size; ++i) {
+            if (key.equals(keyNums[i].key)) {
                 keyNums[i].num++;
                 return simpleCatch.get(key);
             }

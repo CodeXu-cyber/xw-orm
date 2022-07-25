@@ -14,9 +14,9 @@ public interface Executor {
     /**
      * 查询列表接口
      *
-     * @param connection connection
-     * @param mappedStatement mappedStatement
-     * @param args args
+     * @param connection       connection
+     * @param mappedStatement  mappedStatement
+     * @param args             args
      * @param underlineAndHump underlineAndHump
      * @return 查询结果结合
      * @throws Exception 异常信息
@@ -26,32 +26,32 @@ public interface Executor {
     /**
      * 查询单个接口
      *
-     * @param connection connection
-     * @param mappedStatement mappedStatement
-     * @param args args
+     * @param connection       connection
+     * @param mappedStatement  mappedStatement
+     * @param args             args
      * @param underlineAndHump underlineAndHump
      * @return 查询结果
-     * @throws SQLException SQLException
-     * @throws ClassNotFoundException ClassNotFoundException
+     * @throws SQLException              SQLException
+     * @throws ClassNotFoundException    ClassNotFoundException
      * @throws InvocationTargetException InvocationTargetException
-     * @throws NoSuchMethodException NoSuchMethodException
-     * @throws IllegalAccessException IllegalAccessException
-     * @throws InstantiationException InstantiationException
+     * @throws NoSuchMethodException     NoSuchMethodException
+     * @throws IllegalAccessException    IllegalAccessException
+     * @throws InstantiationException    InstantiationException
      */
     Object queryOne(Connection connection, MappedStatement mappedStatement, Object[] args, boolean underlineAndHump) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
 
     /**
      * 修改接口
      *
-     * @param connection connection
+     * @param connection      connection
      * @param mappedStatement mappedStatement
-     * @param args args
+     * @param args            args
      * @return 影响行数
-     * @throws SQLException SQLException
-     * @throws ClassNotFoundException ClassNotFoundException
+     * @throws SQLException              SQLException
+     * @throws ClassNotFoundException    ClassNotFoundException
      * @throws InvocationTargetException InvocationTargetException
-     * @throws NoSuchMethodException NoSuchMethodException
-     * @throws IllegalAccessException IllegalAccessException
+     * @throws NoSuchMethodException     NoSuchMethodException
+     * @throws IllegalAccessException    IllegalAccessException
      */
     int update(Connection connection, MappedStatement mappedStatement, Object[] args) throws SQLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
 }

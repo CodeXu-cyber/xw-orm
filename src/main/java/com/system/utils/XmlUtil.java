@@ -72,8 +72,9 @@ public class XmlUtil {
 
     /**
      * 获取mapper
+     *
      * @param className 类名称
-     * @param mappers mappers
+     * @param mappers   mappers
      * @return str
      */
     public String getMapperFile(String className, List<String> mappers) {
@@ -95,6 +96,7 @@ public class XmlUtil {
 
     /**
      * 获取mapper
+     *
      * @param mappers mappers
      * @return map
      */
