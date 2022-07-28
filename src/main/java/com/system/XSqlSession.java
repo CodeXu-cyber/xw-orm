@@ -21,7 +21,7 @@ public class XSqlSession implements InvocationHandler {
         this.configuration = Configuration.getConfiguration(pathName);
     }
 
-    public Object getMapper(Class cls) {
+    public Object getMapper(Class<?> cls) {
         className = cls.getName();
         return Proxy.newProxyInstance(
                 cls.getClassLoader(),

@@ -101,7 +101,7 @@ public class BaseExecutor implements Executor {
                     preparedStatement.setString(1, str);
                     break;
                 default:
-                    Class clazz = Class.forName(mappedStatement.getParameterType());
+                    Class<?> clazz = Class.forName(mappedStatement.getParameterType());
                     Object obj = args[0];
                     String name = "";
                     for (int i = 0; i < params.size(); i++) {
@@ -125,19 +125,19 @@ public class BaseExecutor implements Executor {
         List<Object> objectList = new ArrayList<>();
         while (resultSet.next()) {
             //反射创建对象
-            Class clazz = Class.forName(resultType);
+            Class<?> clazz = Class.forName(resultType);
             obj = clazz.newInstance();
             //获取ResultSet数据
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             //遍历实体类属性集合，依次将结果集中的值赋给属性
             Field[] fields = clazz.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++) {
-                Object value = setFieldValueByResultSet(fields[i], resultSetMetaData, resultSet, underlineAndHump);
+            for (Field field : fields) {
+                Object value = setFieldValueByResultSet(field, resultSetMetaData, resultSet, underlineAndHump);
                 //通过属性名找到对应的setter方法
-                String name = fields[i].getName();
+                String name = field.getName();
                 name = name.substring(0, 1).toUpperCase() + name.substring(1);
                 String methodName = "set" + name;
-                Method methodObj = clazz.getMethod(methodName, fields[i].getType());
+                Method methodObj = clazz.getMethod(methodName, field.getType());
                 //调用setter方法完成赋值
                 methodObj.invoke(obj, value);
             }
